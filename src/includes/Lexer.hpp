@@ -8,12 +8,15 @@ class Lexer {
         Lexer(std::string text);
 
         std::string text;
+
+        char current_char;
         
         int pos;
 
         Token* get_next_token();
 
         void advance();
+        void skip_whitespace();
 
         char peek();
         char peek_until(int start_pos);
