@@ -4,11 +4,13 @@
 
 int main(int argc, char* argv[]) {
 
-    Lexer* lexer = new Lexer("\"http\"+f_or(\"s\", \"\")+\":\\\"+f_or(\"www.\", fid)+\".\"+fid");
+    Lexer* lexer = new Lexer("\"http\"+f_or(\"s\", \"\")+\":\\\\\"+f_or(\"www.\", fid)+\".\"+fid");
 
-    while (lexer->current_char != '\0') {
-        lexer->advance();
-        std::cout << lexer->current_char << std::endl;
+    Token* token = new Token("", "");
+
+    while (token->type != "EOF") {
+        token = lexer->get_next_token();
+        std::cout << token->value << std::endl;
     }
 
     return 0;

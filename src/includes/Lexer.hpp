@@ -10,7 +10,7 @@ class Lexer {
         std::string text;
 
         char current_char;
-        
+
         int pos;
 
         Token* get_next_token();
@@ -21,8 +21,8 @@ class Lexer {
         char peek();
         char peek_until(int start_pos);
 
-        std::string _id();
-        std::string _string();
-        int _integer();
+        Token* _id();
+        Token* _string();
+        Token* _integer();
 };
 #endif

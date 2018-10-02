@@ -1,4 +1,5 @@
 #include "includes/Lexer.hpp"
+#include <iostream>
 
 
 Lexer::Lexer(std::string text) {
@@ -9,7 +10,23 @@ Lexer::Lexer(std::string text) {
 
 
 Token* Lexer::get_next_token() {
-    return nullptr;
+    while (this->current_char != '\0') {
+        if (this->current_char == ' ') {
+            this->skip_whitespace();
+            continue;
+        }
+
+        if (this->current_char == '"')
+            return this->_string();
+
+        if (isalpha(this->current_char))
+            return this->_id();
+
+        this->advance();
+        continue;
+    }
+
+    return new Token("EOF", "");
 };
 
 void Lexer::advance() {
@@ -34,14 +51,32 @@ char Lexer::peek_until(int start_pos) {
     return ' ';
 };
 
-std::string Lexer::_id() {
-    return "";
+Token* Lexer::_id() {
+    std::string result = "";
+
+    while (this->current_char != '\0' && (isalnum(this->current_char) || this->current_char == '_')) {
+        result += this->current_char;
+        this->advance();
+    }
+
+    return new Token("ID", result);
 };
 
-std::string Lexer::_string() {
-    return "";
+Token* Lexer::_string() {
+    std::string result = "";
+
+    this->advance();
+    
+    while (this->current_char != '"' && this->current_char != '\0') {
+        result += this->current_char;
+        this->advance();
+    }
+
+    this->advance();
+
+    return new Token("STRING", result);
 };
 
-int Lexer::_integer() {
-    return 0;
+Token* Lexer::_integer() {
+    return nullptr;
 };
