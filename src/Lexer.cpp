@@ -22,6 +22,16 @@ Token* Lexer::get_next_token() {
         if (isalpha(this->current_char))
             return this->_id();
 
+        if (current_char == '(') {
+            this->advance();
+            return new Token("LPAREN", "(");
+        }
+
+        if (current_char == ')') {
+            this->advance();
+            return new Token("RPAREN", "");
+        }
+        
         this->advance();
         continue;
     }
@@ -44,7 +54,13 @@ void Lexer::skip_whitespace() {
 };
 
 char Lexer::peek() {
-    return ' ';
+    int peek_pos = this->pos + 1;
+
+    if (peek_pos > (int)this->text.length()) {
+        return '\0';
+    }
+
+    return this->text.at(peek_pos);
 };
 
 char Lexer::peek_until(int start_pos) {
@@ -59,7 +75,12 @@ Token* Lexer::_id() {
         this->advance();
     }
 
-    return new Token("ID", result);
+    std::string type = "ID";
+
+    if (current_char == '(')
+        type = "FUNCTION_CALL";
+
+    return new Token(type, result);
 };
 
 Token* Lexer::_string() {

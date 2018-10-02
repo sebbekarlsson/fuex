@@ -1,17 +1,17 @@
 #include <iostream>
 #include "includes/Lexer.hpp"
+#include "includes/Parser.hpp"
+#include "includes/Interpreter.hpp"
 
 
 int main(int argc, char* argv[]) {
 
-    Lexer* lexer = new Lexer("\"http\"+f_or(\"s\", \"\")+\":\\\\\"+f_or(\"www.\", fid)+\".\"+fid");
+    Lexer* lexer = new Lexer("\"www.\"id()");
 
-    Token* token = new Token("", "");
+    Parser* parser = new Parser(lexer);
+    Interpreter* interpreter = new Interpreter(parser, "hello.com 12");
 
-    while (token->type != "EOF") {
-        token = lexer->get_next_token();
-        std::cout << token->value << std::endl;
-    }
+    interpreter->interpret();
 
     return 0;
 }
