@@ -49,29 +49,24 @@ anything Interpreter::visit_AST_Group(AST_Group* group) {
     std::string result = "";
     std::string tmpstring = "";
 
-    while (this->current_char != '\0') {
-        for (std::vector<AST*>::iterator it = group->children.begin(); it != group->children.end(); ++it) {
-            anything x = this->visit((*it));
+    for (std::vector<AST*>::iterator it = group->children.begin(); it != group->children.end(); ++it) {
+        anything x = this->visit((*it));
 
-            if (x.type() == typeid(std::string)) {
-                tmpstring = boost::get<std::string>(x);
+        if (x.type() == typeid(std::string)) {
+            tmpstring = boost::get<std::string>(x);
 
-                if (!tmpstring.empty()) {
-                    result += boost::get<std::string>(x);
-                } else {
-                    result = "";
-                    tmpstring = "";
-                    continue;
-                }
+            if (!tmpstring.empty()) {
+                result += tmpstring;
+            } else {
+                result = "";
+                tmpstring = "";
+                break;
             }
         }
-
-        if (!result.empty())
-            this->matches[group->name].push_back(result);
-
-        result = "";
-        this->advance();
     }
+
+    if (!result.empty())
+        this->matches[group->name].push_back(result);
 
     return result;
 };
@@ -82,7 +77,11 @@ anything Interpreter::visit_AST_NoOp(AST_NoOp* node) {
 
 int Interpreter::interpret() {
     AST* tree = this->parser->parse();
-    this->visit(tree);
+
+    while (this->current_char != '\0') {
+        this->visit(tree);
+        this->advance();
+    }
 
     return this->matches.size();
 };
