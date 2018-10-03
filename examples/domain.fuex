@@ -1,0 +1,13 @@
+domain {
+     protocol {
+        "http" or("s", "") "://"
+     }
+     
+     sub {
+        or(id() ".", "")
+     }
+     
+     top {
+        id() "." id()
+     }
+}

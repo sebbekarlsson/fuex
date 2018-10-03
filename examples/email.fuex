@@ -1,0 +1,7 @@
+email {
+    id() "@" domain {
+        id() "." top {
+            id()
+        }
+    }
+}

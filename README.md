@@ -38,3 +38,8 @@
 
     # output
     { "domain": "example.com" }
+
+> For more examples, please see [examples/](examples/)
+
+### NOTE!!!
+> The `or` function is not implemented yet!!!!!
