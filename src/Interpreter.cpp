@@ -7,21 +7,17 @@ Interpreter::Interpreter(Parser* parser, std::string text) : Lexer(text) {
     this->parser = parser;
 };
 
-AST* Interpreter::visit_AST_FunctionCall(AST_FunctionCall* node) {
-    std::string result = "";
-
+anything Interpreter::visit_AST_FunctionCall(AST_FunctionCall* node) {
     if (node->name == "id") {
-        result = this->_id()->value;
-        this->matches.push_back(result);
+        return this->_id()->value;
     } else if (node->name == "str") {
-        result = this->_string()->value;
-        this->matches.push_back(result);
+        return this->_string()->value;
     }
     
-    return new AST_NoOp();
+    return "";
 };
 
-AST* Interpreter::visit_AST_String(AST_String* node) {
+anything Interpreter::visit_AST_String(AST_String* node) {
     std::string result = "";
     int i = 0;
     while (this->current_char == node->value.at(i)) {
@@ -35,23 +31,42 @@ AST* Interpreter::visit_AST_String(AST_String* node) {
     if (result != node->value)
         this->pos += node->value.length() - 1;
 
-    this->matches.push_back(result);
+    return result;
     return new AST_NoOp();
 };
 
-AST* Interpreter::visit_AST_Compound(AST_Compound* node) {
+anything Interpreter::visit_AST_Compound(AST_Compound* node) {
     for (std::vector<AST*>::iterator it = node->children.begin(); it != node->children.end(); ++it)
         this->visit((*it));
 
     return new AST_NoOp();
 };
  
-AST* Interpreter::visit_AST_Group(AST_Group* group) {
-    std::cout << "group" << std::endl;
-    return nullptr;
+anything Interpreter::visit_AST_Group(AST_Group* group) {
+    std::string result = "";
+
+    for (std::vector<AST*>::iterator it = group->children.begin(); it != group->children.end(); ++it) {
+        anything x = this->visit((*it));
+
+        if (x.type() == typeid(std::string)) {
+            std::string tmpstring = boost::get<std::string>(x);
+
+            if (!tmpstring.empty()) {
+                result += boost::get<std::string>(x);
+            } else {
+                tmpstring = "";
+                result = "";
+                break;
+            }
+        }
+    }
+
+    this->matches.push_back(result);
+
+    return result;
 };
 
-AST* Interpreter::visit_AST_NoOp(AST_NoOp* node) {
+anything Interpreter::visit_AST_NoOp(AST_NoOp* node) {
     return nullptr;
 };
 

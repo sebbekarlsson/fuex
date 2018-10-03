@@ -13,11 +13,11 @@ class Interpreter: public Nodevisitor, Lexer {
 
         Parser* parser;
 
-        AST* visit_AST_FunctionCall(AST_FunctionCall* node);
-        AST* visit_AST_String(AST_String* node);
-        AST* visit_AST_Compound(AST_Compound* node);
-        AST* visit_AST_Group(AST_Group* node);
-        AST* visit_AST_NoOp(AST_NoOp* node);
+        anything visit_AST_FunctionCall(AST_FunctionCall* node);
+        anything visit_AST_String(AST_String* node);
+        anything visit_AST_Compound(AST_Compound* node);
+        anything visit_AST_Group(AST_Group* node);
+        anything visit_AST_NoOp(AST_NoOp* node);
 
         std::vector<std::string> matches;
 

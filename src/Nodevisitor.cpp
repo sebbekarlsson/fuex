@@ -1,7 +1,7 @@
 #include "includes/Nodevisitor.hpp"
 
 
-AST* Nodevisitor::visit(AST* node) {
+anything Nodevisitor::visit(AST* node) {
     if (dynamic_cast<AST_Group*>( node )) {
         return this->visit_AST_Group((AST_Group*)node);
     }
