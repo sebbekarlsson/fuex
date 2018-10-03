@@ -19,7 +19,7 @@
 
 > Example:
 
-    email { id() "@" domain {id() "." id() } }
+    email { id() "@" domain { id() "." id() } }
 
 > This would give you this output structure if `bob@example.com` was used:
 
