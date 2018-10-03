@@ -2,6 +2,7 @@
 #define FUEX_PARSER_H
 #include "AST/AST_FunctionCall.hpp"
 #include "AST/AST_String.hpp"
+#include "AST/AST_Group.hpp"
 #include "Token.hpp"
 #include "Lexer.hpp"
 
@@ -22,6 +23,7 @@ class Parser {
 
         AST_FunctionCall* _function_call();
         AST_String* _string();
+        AST_Group* _group();
 
         AST* parse();
 };

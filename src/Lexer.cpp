@@ -22,18 +22,32 @@ Token* Lexer::get_next_token() {
         if (isalpha(this->current_char))
             return this->_id();
 
-        if (current_char == '(') {
+        if (this->current_char == '(') {
             this->advance();
             return new Token("LPAREN", "(");
         }
 
-        if (current_char == ')') {
+        if (this->current_char == ')') {
             this->advance();
             return new Token("RPAREN", "");
         }
-        
-        this->advance();
-        continue;
+
+        if (this->current_char == '{') {
+           this->advance();
+           return new Token("LBRACE", "{");
+        }
+
+        if (this->current_char == '}') {
+           this->advance();
+           return new Token("RBRACE", "}");
+        }
+
+        if (this->current_char == ';') {
+            this->advance();
+            return new Token("SEMI", ";");
+        }
+
+        throw std::runtime_error("Unexpected character");
     }
 
     return new Token("EOF", "");
@@ -85,6 +99,9 @@ Token* Lexer::_id() {
 
 Token* Lexer::_string() {
     std::string result = "";
+
+    if (this->current_char != '"')
+        return new Token("STRING", result);
 
     this->advance();
     

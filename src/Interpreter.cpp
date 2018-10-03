@@ -8,9 +8,16 @@ Interpreter::Interpreter(Parser* parser, std::string text) : Lexer(text) {
 };
 
 AST* Interpreter::visit_AST_FunctionCall(AST_FunctionCall* node) {
-    std::string result = this->_id()->value;
+    std::string result = "";
 
-    this->matches.push_back(result);
+    if (node->name == "id") {
+        result = this->_id()->value;
+        this->matches.push_back(result);
+    } else if (node->name == "str") {
+        result = this->_string()->value;
+        this->matches.push_back(result);
+    }
+    
     return new AST_NoOp();
 };
 
@@ -25,6 +32,9 @@ AST* Interpreter::visit_AST_String(AST_String* node) {
         if (i >= node->value.length())
             break;
     }
+    if (result != node->value)
+        this->pos += node->value.length() - 1;
+
     this->matches.push_back(result);
     return new AST_NoOp();
 };
@@ -34,6 +44,11 @@ AST* Interpreter::visit_AST_Compound(AST_Compound* node) {
         this->visit((*it));
 
     return new AST_NoOp();
+};
+ 
+AST* Interpreter::visit_AST_Group(AST_Group* group) {
+    std::cout << "group" << std::endl;
+    return nullptr;
 };
 
 AST* Interpreter::visit_AST_NoOp(AST_NoOp* node) {

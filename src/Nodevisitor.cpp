@@ -2,6 +2,10 @@
 
 
 AST* Nodevisitor::visit(AST* node) {
+    if (dynamic_cast<AST_Group*>( node )) {
+        return this->visit_AST_Group((AST_Group*)node);
+    }
+
     if (dynamic_cast<AST_Compound*>( node )) {
         return this->visit_AST_Compound((AST_Compound*)node);
     }

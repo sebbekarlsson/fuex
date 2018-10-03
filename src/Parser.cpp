@@ -13,12 +13,13 @@ void Parser::eat(std::string type) {
     if (type == this->current_token->type) {
         this->current_token = this->lexer->get_next_token();
     } else {
-        throw std::runtime_error(type);
+        throw std::runtime_error("Expected: " + type + ", got: " + this->current_token->type);
     }
 }
 
 AST_FunctionCall* Parser::_function_call() {
     std::vector<Token*> args;
+    std::string name = this->current_token->value;
     this->eat("FUNCTION_CALL");
     this->eat("LPAREN");
 
@@ -33,7 +34,9 @@ AST_FunctionCall* Parser::_function_call() {
         args.push_back(this->current_token);
     }
 
-    return new AST_FunctionCall(args);
+    this->eat("RPAREN");
+
+    return new AST_FunctionCall(name, args);
 };
 
 AST_String* Parser::_string() {
@@ -48,8 +51,8 @@ AST* Parser::statement() {
         return this->_function_call();
     else if (this->current_token->type == "STRING")
         return this->_string();
-
-    this->current_token = this->lexer->get_next_token();
+    else if (this->current_token->type == "LBRACE")
+        return this->_group();
 
     return new AST_NoOp();
 };
@@ -57,11 +60,29 @@ AST* Parser::statement() {
 std::vector<AST*> Parser::statement_list() {
     std::vector<AST*> nodes;
 
+    nodes.push_back(this->statement());
+
     while (this->current_token->type != "EOF" && this->current_token->type != "SEMI") {
-        nodes.push_back(this->statement());    
+        nodes.push_back(this->statement());
     };
 
+    if (this->current_token->type == "SEMI")
+        this->eat("SEMI");
+
     return nodes;
+};
+
+AST_Group* Parser::_group() {
+    AST_Group* group;
+    std::vector<AST*> children;
+    
+    this->eat("LBRACE");
+    while (this->current_token->type != "RBRACE")
+        children.push_back(this->statement());
+
+    this->eat("RBRACE");
+
+    return new AST_Group(children);
 };
 
 AST* Parser::parse() {
