@@ -51,7 +51,7 @@ AST* Parser::statement() {
         return this->_function_call();
     else if (this->current_token->type == "STRING")
         return this->_string();
-    else if (this->current_token->type == "LBRACE")
+    else if (this->current_token->type == "LBRACE" || this->current_token->type == "GROUP")
         return this->_group();
 
     return new AST_NoOp();
@@ -74,7 +74,13 @@ std::vector<AST*> Parser::statement_list() {
 
 AST_Group* Parser::_group() {
     AST_Group* group;
+    std::string name = "";
     std::vector<AST*> children;
+
+    if (this->current_token->type == "GROUP") {
+        name = this->current_token->value;
+        this->eat("GROUP");
+    }
     
     this->eat("LBRACE");
     while (this->current_token->type != "RBRACE")
@@ -82,7 +88,7 @@ AST_Group* Parser::_group() {
 
     this->eat("RBRACE");
 
-    return new AST_Group(children);
+    return new AST_Group(name, children);
 };
 
 AST* Parser::parse() {

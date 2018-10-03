@@ -67,7 +67,7 @@ anything Interpreter::visit_AST_Group(AST_Group* group) {
         }
 
         if (!result.empty())
-            this->matches.push_back(result);
+            this->matches[group->name].push_back(result);
 
         result = "";
         this->advance();

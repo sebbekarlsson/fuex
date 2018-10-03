@@ -78,7 +78,21 @@ char Lexer::peek() {
 };
 
 char Lexer::peek_until(int start_pos) {
-    return ' ';
+    int peek_pos = start_pos;
+    char c = '\0';
+
+    while (peek_pos < (int)this->text.length()) {
+        c = this->text.at(peek_pos);
+
+        if (c == '\0' || c == ' ' || c == '\n') {
+            peek_pos++;
+            continue;
+        } else {
+            break;
+        }
+    }
+
+    return c;
 };
 
 Token* Lexer::_id() {
@@ -91,8 +105,11 @@ Token* Lexer::_id() {
 
     std::string type = "ID";
 
-    if (current_char == '(')
+    if (this->peek_until(this->pos) == '(') {
         type = "FUNCTION_CALL";
+    } else if (this->peek_until(this->pos) == '{') {
+        type = "GROUP";
+    }
 
     return new Token(type, result);
 };
