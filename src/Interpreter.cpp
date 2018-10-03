@@ -12,8 +12,10 @@ anything Interpreter::visit_AST_FunctionCall(AST_FunctionCall* node) {
         return this->_id()->value;
     } else if (node->name == "str") {
         return this->_string()->value;
+    } else if (node->name == "w") {
+        this->skip_whitespace();
     }
-    
+
     return "";
 };
 
@@ -25,9 +27,10 @@ anything Interpreter::visit_AST_String(AST_String* node) {
         result += this->current_char;
         this->advance();
 
-        if (i >= node->value.length())
+        if (i >= (int)node->value.length())
             break;
     }
+
     if (result != node->value)
         this->pos += node->value.length() - 1;
 
@@ -41,27 +44,34 @@ anything Interpreter::visit_AST_Compound(AST_Compound* node) {
 
     return new AST_NoOp();
 };
- 
+
 anything Interpreter::visit_AST_Group(AST_Group* group) {
     std::string result = "";
+    std::string tmpstring = "";
 
-    for (std::vector<AST*>::iterator it = group->children.begin(); it != group->children.end(); ++it) {
-        anything x = this->visit((*it));
+    while (this->current_char != '\0') {
+        for (std::vector<AST*>::iterator it = group->children.begin(); it != group->children.end(); ++it) {
+            anything x = this->visit((*it));
 
-        if (x.type() == typeid(std::string)) {
-            std::string tmpstring = boost::get<std::string>(x);
+            if (x.type() == typeid(std::string)) {
+                tmpstring = boost::get<std::string>(x);
 
-            if (!tmpstring.empty()) {
-                result += boost::get<std::string>(x);
-            } else {
-                tmpstring = "";
-                result = "";
-                break;
+                if (!tmpstring.empty()) {
+                    result += boost::get<std::string>(x);
+                } else {
+                    result = "";
+                    tmpstring = "";
+                    continue;
+                }
             }
         }
-    }
 
-    this->matches.push_back(result);
+        if (!result.empty())
+            this->matches.push_back(result);
+
+        result = "";
+        this->advance();
+    }
 
     return result;
 };
@@ -70,9 +80,9 @@ anything Interpreter::visit_AST_NoOp(AST_NoOp* node) {
     return nullptr;
 };
 
-bool Interpreter::interpret() {
+int Interpreter::interpret() {
     AST* tree = this->parser->parse();
     this->visit(tree);
 
-    return true;
+    return this->matches.size();
 };

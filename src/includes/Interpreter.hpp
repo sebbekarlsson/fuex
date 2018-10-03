@@ -21,6 +21,6 @@ class Interpreter: public Nodevisitor, Lexer {
 
         std::vector<std::string> matches;
 
-        bool interpret();
+        int interpret();
 };
 #endif
