@@ -3,56 +3,29 @@
 #include <sstream>
 
 
-Interpreter::Interpreter(Parser* parser, std::string input_string) {
+Interpreter::Interpreter(Parser* parser, std::string text) : Lexer(text) {
     this->parser = parser;
-    this->input_string = input_string;
-    this->pos = 0;
 };
 
 AST* Interpreter::visit_AST_FunctionCall(AST_FunctionCall* node) {
-    while (
-        this->input_string.at(this->pos) != '\0' &&
-        this->pos < (int)this->input_string.size()
-    ) {
-        std::stringstream ss;
-        std::string s;
-        ss << this->input_string.at(this->pos);
-        ss >> s;
+    std::string result = this->_id()->value;
 
-        if (!isalnum(this->input_string.at(this->pos)))
-            break;
-        else
-            std::cout << s << " = ok" << std::endl;
-
-        this->pos++;
-    }
-
+    this->matches.push_back(result);
     return new AST_NoOp();
 };
 
 AST* Interpreter::visit_AST_String(AST_String* node) {
+    std::string result = "";
     int i = 0;
-    while (this->pos < (int)this->input_string.size()) {
-        if (i >= (int)node->value.size())
-            break;
-
-        std::stringstream ss;
-        std::string s;
-        ss << this->input_string.at(this->pos);
-        ss >> s;
-
-        if (node->value.at(i) != this->input_string.at(this->pos)) {
-            std::cout << s << " = ok" << std::endl;
-        } else {
-            std::cout << "unexpected: " + s << std::endl;
-            this->pos++;
-            break;
-        }
-
+    while (this->current_char == node->value.at(i)) {
         i++;
-        this->pos++;
-    }
+        result += this->current_char;
+        this->advance();
 
+        if (i >= node->value.length())
+            break;
+    }
+    this->matches.push_back(result);
     return new AST_NoOp();
 };
 

@@ -3,20 +3,22 @@
 #include "Nodevisitor.hpp"
 #include "Lexer.hpp"
 #include "Parser.hpp"
+#include <vector>
+#include <string>
 
 
-class Interpreter: public Nodevisitor {
+class Interpreter: public Nodevisitor, Lexer {
     public:
-        Interpreter(Parser* parser, std::string input_string);
+        Interpreter(Parser* parser, std::string text);
 
         Parser* parser;
-        std::string input_string;
-        int pos;
 
         AST* visit_AST_FunctionCall(AST_FunctionCall* node);
         AST* visit_AST_String(AST_String* node);
         AST* visit_AST_Compound(AST_Compound* node);
         AST* visit_AST_NoOp(AST_NoOp* node);
+
+        std::vector<std::string> matches;
 
         bool interpret();
 };
