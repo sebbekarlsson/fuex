@@ -31,8 +31,10 @@ anything Interpreter::visit_AST_String(AST_String* node) {
             break;
     }
 
-    if (result != node->value)
+    if (result != node->value) {
         this->pos += node->value.length() - 1;
+        result = "";
+    }
 
     return result;
     return new AST_NoOp();
@@ -58,9 +60,7 @@ anything Interpreter::visit_AST_Group(AST_Group* group) {
             if (!tmpstring.empty()) {
                 result += tmpstring;
             } else {
-                result = "";
-                tmpstring = "";
-                break;
+                return result;
             }
         }
     }
