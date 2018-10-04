@@ -18,20 +18,18 @@ void Parser::eat(std::string type) {
 }
 
 AST_FunctionCall* Parser::_function_call() {
-    std::vector<Token*> args;
+    std::vector<AST*> args;
     std::string name = this->current_token->value;
     this->eat("FUNCTION_CALL");
     this->eat("LPAREN");
 
-    if (this->current_token->type == "ID") {
-        this->eat("ID");
-        args.push_back(this->current_token);
+    if (this->current_token->type != "RPAREN") {
+        args.push_back(this->statement());
     }
 
     while (this->current_token->type == "COMMA") {
         this->eat("COMMA");
-        this->eat("ID");
-        args.push_back(this->current_token);
+        args.push_back(this->statement());
     }
 
     this->eat("RPAREN");

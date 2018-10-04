@@ -1,6 +1,6 @@
 email {
-    id() "@" domain {
-        id() "." top {
+    id() e("@") domain {
+        id() e(".") top {
             id()
         }
     }

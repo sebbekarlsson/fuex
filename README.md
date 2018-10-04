@@ -8,8 +8,12 @@
 
 ### Built-in functions
 > Here are the built-in functions:  
+* `e` - expect exactly, example: `e("http")`
 * `id` - expects an id which is a combination of alphanumerical characters.
-* `str` - expects a string, example `"hello world"`  
+* `str` - expects a string, example `"hello world"`
+* `su` - skip until, skips all characters until the provided one, example: `su("g")`
+* `eu` - everything until, capture everything until the provided character, example: `eu("}")`
+* `s` - skip one character, example: `s("p")`.  
 > To use a function: `function_name()`, example: `id()`
 
 ### Groups
@@ -19,7 +23,7 @@
 
 > Example:
 
-    email { id() "@" domain { id() "." id() } }
+    email { id() e("@") domain { id() e(".") id() } }
 
 > This would give you this output structure if `bob@example.com` was used:
 
@@ -31,7 +35,7 @@
 > Getting a domain name from a URL:
 
     # fuex
-    { "http" or("s", "") "://" or("www.", "") domain { id() "." id() } }
+    { e("http") or("s", "") e("://") or("www.", "") domain { id() e(".") id() } }
 
     # input
     "https://www.example.com"

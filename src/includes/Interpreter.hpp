@@ -20,6 +20,8 @@ class Interpreter: public Nodevisitor, Lexer {
         anything visit_AST_Group(AST_Group* node);
         anything visit_AST_NoOp(AST_NoOp* node);
 
+        std::string _expect(std::string value);
+
         std::map<std::string, std::vector<std::string>> matches;
 
         int interpret();

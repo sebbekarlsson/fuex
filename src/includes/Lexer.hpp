@@ -17,6 +17,9 @@ class Lexer {
 
         void advance();
         void skip_whitespace();
+        
+        std::string skip_char(char c, bool collect);
+        std::string skip_until(char c, bool collect);
 
         char peek();
         char peek_until(int start_pos);

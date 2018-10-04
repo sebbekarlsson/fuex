@@ -1,0 +1,9 @@
+function {
+    e("function") w() name {
+        id()
+    }
+    
+    body {
+        su("{") eu("}")
+    }
+}

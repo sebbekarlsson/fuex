@@ -12,32 +12,51 @@ anything Interpreter::visit_AST_FunctionCall(AST_FunctionCall* node) {
         return this->_id()->value;
     } else if (node->name == "str") {
         return this->_string()->value;
+    } else if (node->name == "su") {
+       anything argument = this->visit(node->args[0]);
+       if (argument.type() == typeid(std::string))
+           this->skip_until(boost::get<std::string>(argument).at(0), false);
     } else if (node->name == "w") {
         this->skip_whitespace();
+    } else if (node->name == "e") {
+        anything argument = this->visit(node->args[0]);
+        if (argument.type() == typeid(std::string))
+            return this->_expect(boost::get<std::string>(argument));
+    } else if (node->name == "eu") {
+       anything argument = this->visit(node->args[0]);
+       if (argument.type() == typeid(std::string))
+           return this->skip_until(boost::get<std::string>(argument).at(0), true);
+    } else if (node->name == "s") {
+       anything argument = this->visit(node->args[0]);
+       if (argument.type() == typeid(std::string))
+           this->skip_char(boost::get<std::string>(argument).at(0), false);
     }
 
     return "";
 };
 
 anything Interpreter::visit_AST_String(AST_String* node) {
+    return node->value;
+}
+
+std::string Interpreter::_expect(std::string value) {
     std::string result = "";
     int i = 0;
-    while (this->current_char == node->value.at(i)) {
+    while (this->current_char == value.at(i)) {
         i++;
         result += this->current_char;
         this->advance();
 
-        if (i >= (int)node->value.length())
+        if (i >= (int)value.length())
             break;
     }
 
-    if (result != node->value) {
-        this->pos += node->value.length() - 1;
+    if (result != value) {
+        this->pos += value.length() - 1;
         result = "";
     }
 
     return result;
-    return new AST_NoOp();
 };
 
 anything Interpreter::visit_AST_Compound(AST_Compound* node) {

@@ -67,6 +67,43 @@ void Lexer::skip_whitespace() {
         this->advance();
 };
 
+std::string Lexer::skip_char(char c, bool collect) {
+    std::string result = "";
+
+    if (this->current_char == c) {
+        if (collect)
+            result += this->current_char;
+
+        this->advance();
+    }
+
+    return result;
+}
+
+std::string Lexer::skip_until(char c, bool collect) {
+    std::string result = "";
+
+    if (this->current_char != c) {
+        if (collect)
+            result += this->current_char;
+        this->advance();
+    }
+
+    while (this->current_char != '\0') {
+        if (this->current_char != c) {
+            if (collect)
+                result += this->current_char;
+        } else {
+            break;
+        }
+
+
+        this->advance();
+    }
+
+    return result;
+};
+
 char Lexer::peek() {
     int peek_pos = this->pos + 1;
 

@@ -1,6 +1,6 @@
 domain {
      protocol {
-        "http" or("s", "") "://"
+        e("http") or("s", "") e("://")
      }
      
      sub {
@@ -8,6 +8,6 @@ domain {
      }
      
      top {
-        id() "." id()
+        id() e(".") id()
      }
 }
